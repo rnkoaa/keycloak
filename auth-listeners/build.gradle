@@ -1,0 +1,18 @@
+group 'org.richard.keycloak.spi'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.keycloak', name: 'keycloak-core', version: '3.2.0.Final'
+    compileOnly group: 'org.keycloak', name: 'keycloak-server-spi', version: '3.2.0.Final'
+    compileOnly group: 'org.keycloak', name: 'keycloak-server-spi-private', version: '3.2.0.Final'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
