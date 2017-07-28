@@ -24,6 +24,7 @@ public class SysoutEventListenerProvider implements EventListenerProvider {
 
     @Override
     public void onEvent(Event event) {
+        System.out.println("SysoutEventListenerProvider::OnEvent...");
         // Ignore excluded events
         if (excludedEvents != null && excludedEvents.contains(event.getType())) {
             return;
@@ -34,6 +35,7 @@ public class SysoutEventListenerProvider implements EventListenerProvider {
 
     @Override
     public void onEvent(AdminEvent event, boolean includeRepresentation) {
+        System.out.println("SysoutEventListenerProvider::onAdminEvent...");
         // Ignore excluded operations
         if (excludedAdminOperations != null && excludedAdminOperations.contains(event.getOperationType())) {
             return;
@@ -105,6 +107,7 @@ public class SysoutEventListenerProvider implements EventListenerProvider {
 
     @Override
     public void close() {
+        System.out.println("SysoutEventListenerProvider::close");
     }
 
 }
