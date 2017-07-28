@@ -26,6 +26,9 @@ public class SysoutEventListenerProvider implements EventListenerProvider {
     public void onEvent(Event event) {
         System.out.println("SysoutEventListenerProvider::OnEvent...");
         // Ignore excluded events
+        System.out.println("***** Received Event ******");
+        System.out.println(event);
+        System.out.println("****************************");
         if (excludedEvents != null && excludedEvents.contains(event.getType())) {
             return;
         } else {

@@ -193,3 +193,5 @@ _book
 *.mobi
 *.pdf
 
+.idea/
+*.iml
