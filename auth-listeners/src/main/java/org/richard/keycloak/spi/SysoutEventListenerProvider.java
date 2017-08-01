@@ -22,8 +22,10 @@ public class SysoutEventListenerProvider implements EventListenerProvider {
     public void onEvent(Event event) {
         System.out.println("SysoutEventListenerProvider::OnEvent...");
 
-        // only interested in registration events without errors.
-        if (event.getType() == EventType.REGISTER && Strings.isNullOrEmpty(event.getError())) {
+        /*
+            Process the event to emit if there was no error and the event was a registration
+         */
+        if(Strings.isNullOrEmpty(event.getError()) && event.getType() == EventType.REGISTER){
             System.out.println("***** Registered Received Event ******");
             System.out.println("EVENT: " + toString(event));
             KeycloakUserEvent.KeycloakUserEventBuilder userEventBuilder = KeycloakUserEvent.builder()
@@ -37,9 +39,6 @@ public class SysoutEventListenerProvider implements EventListenerProvider {
 
             KeycloakUserEvent keycloakUserEvent = userEventBuilder.build();
             System.out.println(keycloakUserEvent);
-
-
-            //.username(event.get)
         }
         System.out.println("****************************");
     }

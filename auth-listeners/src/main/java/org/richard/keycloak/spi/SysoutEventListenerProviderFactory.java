@@ -54,15 +54,16 @@ public class SysoutEventListenerProviderFactory implements EventListenerProvider
             Arrays.stream(excludesOperations)
                     .forEach(System.out::println);
         }*/
-        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+      /*  AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
 
         ctx.register(EventListenerConfiguration.class);
-        ctx.refresh();
+        ctx.refresh();*/
 
         /*MyService myService = ctx.getBean(MyService.class);
         myService.doStuff();*/
         //return new SysoutEventListenerProvider(excludedEvents, excludedAdminOperations);
-        sysoutEventListenerProvider = ctx.getBean(SysoutEventListenerProvider.class);
+        //sysoutEventListenerProvider = ctx.getBean(SysoutEventListenerProvider.class);
+        sysoutEventListenerProvider = new SysoutEventListenerProvider();
     }
 
     @Override
