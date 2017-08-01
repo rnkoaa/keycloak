@@ -1,18 +1,48 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+    }
+}
+
+
+
 group 'org.richard.keycloak.spi'
 version '1.0-SNAPSHOT'
 
+
+apply plugin: "com.github.johnrengelman.shadow"
 apply plugin: 'java'
 apply plugin: 'idea'
 
 sourceCompatibility = 1.8
+
+shadowJar {
+    configurations = [project.configurations.compile]
+
+    baseName = 'keycloak-auth-listeners'
+    classifier = null
+    version = null
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    compile group: 'org.springframework', name: 'spring-context', version: '4.3.10.RELEASE'
+    compile group: 'org.springframework', name: 'spring-core', version: '4.3.10.RELEASE'
+    compile group: 'org.springframework', name: 'spring-beans', version: '4.3.10.RELEASE'
+    compile group: 'org.springframework', name: 'spring-expression', version: '4.3.10.RELEASE'
     compile group: 'org.keycloak', name: 'keycloak-core', version: '3.2.0.Final'
+    compile group: 'com.google.guava', name: 'guava', version: '22.0'
+
+
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.16.18'
     compileOnly group: 'org.keycloak', name: 'keycloak-server-spi', version: '3.2.0.Final'
     compileOnly group: 'org.keycloak', name: 'keycloak-server-spi-private', version: '3.2.0.Final'
+
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

@@ -1,5 +1,6 @@
 package org.richard.keycloak.spi;
 
+import com.google.common.base.Strings;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventType;
@@ -7,44 +8,50 @@ import org.keycloak.events.admin.AdminEvent;
 import org.keycloak.events.admin.OperationType;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by 7/26/17.
  */
 public class SysoutEventListenerProvider implements EventListenerProvider {
-    private Set<EventType> excludedEvents;
-    private Set<OperationType> excludedAdminOperations;
 
-    public SysoutEventListenerProvider(Set<EventType> excludedEvents, Set<OperationType> excludedAdminOperations) {
-        this.excludedEvents = excludedEvents;
-        this.excludedAdminOperations = excludedAdminOperations;
+    SysoutEventListenerProvider() {
     }
 
 
     @Override
     public void onEvent(Event event) {
         System.out.println("SysoutEventListenerProvider::OnEvent...");
-        // Ignore excluded events
-        System.out.println("***** Received Event ******");
-        System.out.println(event);
-        System.out.println("****************************");
-        if (excludedEvents != null && excludedEvents.contains(event.getType())) {
-            return;
-        } else {
+
+        // only interested in registration events without errors.
+        if (event.getType() == EventType.REGISTER && Strings.isNullOrEmpty(event.getError())) {
+            System.out.println("***** Registered Received Event ******");
             System.out.println("EVENT: " + toString(event));
+            KeycloakUserEvent.KeycloakUserEventBuilder userEventBuilder = KeycloakUserEvent.builder()
+                    .userId(event.getUserId());
+
+            Map<String, String> eventDetails = event.getDetails();
+            if (event.getDetails() != null) {
+                userEventBuilder.email(eventDetails.getOrDefault("email", ""));
+                userEventBuilder.username(eventDetails.getOrDefault("username", ""));
+            }
+
+            KeycloakUserEvent keycloakUserEvent = userEventBuilder.build();
+            System.out.println(keycloakUserEvent);
+
+
+            //.username(event.get)
         }
+        System.out.println("****************************");
     }
 
     @Override
     public void onEvent(AdminEvent event, boolean includeRepresentation) {
         System.out.println("SysoutEventListenerProvider::onAdminEvent...");
-        // Ignore excluded operations
-        if (excludedAdminOperations != null && excludedAdminOperations.contains(event.getOperationType())) {
-            return;
-        } else {
+        if (event.getOperationType() == OperationType.CREATE) {
+            System.out.println("***** Registered Received Event ******");
             System.out.println("EVENT: " + toString(event));
         }
+        System.out.println("****************************");
     }
 
     private String toString(Event event) {
