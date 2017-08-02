@@ -1,6 +1,7 @@
 package org.richard.keycloak.spi;
 
 import com.google.common.base.Strings;
+import org.apache.camel.ProducerTemplate;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventType;
@@ -14,7 +15,10 @@ import java.util.Map;
  */
 public class SysoutEventListenerProvider implements EventListenerProvider {
 
-    SysoutEventListenerProvider() {
+    private final ProducerTemplate producerTemplate;
+
+    SysoutEventListenerProvider(ProducerTemplate producerTemplate) {
+        this.producerTemplate = producerTemplate;
     }
 
 
@@ -39,6 +43,7 @@ public class SysoutEventListenerProvider implements EventListenerProvider {
 
             KeycloakUserEvent keycloakUserEvent = userEventBuilder.build();
             System.out.println(keycloakUserEvent);
+            producerTemplate.sendBody("direct:kafkaRoute", keycloakUserEvent.toString());
         }
         System.out.println("****************************");
     }

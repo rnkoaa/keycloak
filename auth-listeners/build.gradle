@@ -1,4 +1,7 @@
 buildscript {
+    ext{
+        camelVersion="2.19.1"
+    }
     repositories {
         jcenter()
     }
@@ -34,6 +37,17 @@ repositories {
 dependencies {
     compile group: 'org.keycloak', name: 'keycloak-core', version: '3.2.0.Final'
     compile group: 'com.google.guava', name: 'guava', version: '22.0'
+
+    compile("org.apache.kafka:kafka-clients:0.11.0.0")
+    compile("org.slf4j:slf4j-api:1.7.25")
+    compile("org.slf4j:slf4j-log4j12:1.7.25")
+    compile("log4j:log4j:1.2.17")
+
+    // required by camel to startup
+    compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.2.12'
+    compile("org.apache.camel:camel-core:${camelVersion}")
+    compile("org.apache.camel:camel-stream:${camelVersion}")
+    compile("org.apache.camel:camel-kafka:${camelVersion}")
 
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.16.18'
