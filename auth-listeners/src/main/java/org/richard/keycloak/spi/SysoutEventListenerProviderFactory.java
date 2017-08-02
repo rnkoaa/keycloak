@@ -34,22 +34,13 @@ public class SysoutEventListenerProviderFactory implements EventListenerProvider
 
     @Override
     public void init(Config.Scope config) {
-        //Properties classpath = new Properties("");
         System.out.println("SysoutEventListenerProviderFactory::init");
 
         Properties properties = resolveProperties(config);
         if (properties != null)
             properties.list(System.out);
 
-        CamelContext camelContext = new DefaultCamelContext();
-        //camelContext
-        PropertiesComponent propertiesComponent = camelContext.getComponent("properties", PropertiesComponent.class);
-        propertiesComponent.setOverrideProperties(properties);
-
-        // setup kafka component with the brokers
-        KafkaComponent kafka = new KafkaComponent();
-        kafka.setBrokers("{{" + APPLICATION_KAFKA_BROKERS_HOST + "}}:{{" + APPLICATION_KAFKA_BROKERS_PORT + "}}");
-        camelContext.addComponent("kafka", kafka);
+        CamelContext camelContext = prepareCamelContext(properties);
 
         try {
             camelContext.addRoutes(new KafkaProducerRouteBuilder());
@@ -60,6 +51,19 @@ public class SysoutEventListenerProviderFactory implements EventListenerProvider
             e.printStackTrace();
         }
 
+    }
+
+    private CamelContext prepareCamelContext(Properties properties) {
+        CamelContext camelContext = new DefaultCamelContext();
+        //camelContext
+        PropertiesComponent propertiesComponent = camelContext.getComponent("properties", PropertiesComponent.class);
+        propertiesComponent.setOverrideProperties(properties);
+
+        // setup kafka component with the brokers
+        KafkaComponent kafka = new KafkaComponent();
+        kafka.setBrokers("{{" + APPLICATION_KAFKA_BROKERS_HOST + "}}:{{" + APPLICATION_KAFKA_BROKERS_PORT + "}}");
+        camelContext.addComponent("kafka", kafka);
+        return camelContext;
     }
 
     private Properties resolveProperties(Config.Scope config) {
