@@ -1,6 +1,7 @@
 package org.richard.keycloak.spi;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.kafka.KafkaComponent;
@@ -14,6 +15,7 @@ import org.keycloak.models.KeycloakSessionFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -23,6 +25,8 @@ public class SysoutEventListenerProviderFactory implements EventListenerProvider
     private static final String APPLICATION_KAFKA_BROKERS_HOST = "application.kafka.brokers.host";
     private static final String APPLICATION_KAFKA_BROKERS_PORT = "application.kafka.brokers.port";
     private static final String APPLICATION_KAFKA_TOPIC_NAME = "application.kafka.topic.name";
+    private static final String REALM_ID="";
+    private static final String APPLICATION_ID="";
 
     private SysoutEventListenerProvider sysoutEventListenerProvider;
 
@@ -42,8 +46,10 @@ public class SysoutEventListenerProviderFactory implements EventListenerProvider
 
         CamelContext camelContext = prepareCamelContext(properties);
 
+        //a local cache which is built to determine where a given event will be published
+        Map<String, String> topicMap = Maps.newHashMap();
         try {
-            camelContext.addRoutes(new KafkaProducerRouteBuilder());
+            camelContext.addRoutes(new KafkaProducerRouteBuilder(topicMap));
             ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
             camelContext.start();
             sysoutEventListenerProvider = new SysoutEventListenerProvider(producerTemplate);
