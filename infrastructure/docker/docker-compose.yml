@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  keycloak:
+    image: jboss/keycloak
+    container_name: keycloak
+    ports:
+      - "8080:8080"
+    environment:
+      - "KEYCLOAK_USER=admin"
+      - "KEYCLOAK_PASSWORD=admin"
+    volumes:
+      - "$HOME/docker/keycloak/providers:/opt/jboss/keycloak/providers"
+      - "$HOME/docker/keycloak/themes:/opt/jboss/keycloak/themes"
+      - "$HOME/docker/keycloak/standalone/data:/opt/jboss/keycloak/standalone/data"
+      - "$HOME/docker/keycloak/standalone/log:/opt/jboss/keycloak/standalone/log"
+#      - "/opt/jboss/keycloak/standalone/data is where the H2 data is stored, /opt/jboss/keycloak/standalone/log"
