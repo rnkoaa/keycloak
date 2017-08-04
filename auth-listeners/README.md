@@ -25,3 +25,6 @@ On *nix
 ```sh
 jboss-cli.sh --command="module add --name=Mymodule1 --resources=../providers/xxClient.jar" 
 ```
+
+## configuring spi
+[Keycloak Spi Doc](https://keycloak.gitbooks.io/documentation/server_installation/topics/config-subsystem/configure-spi-providers.html)

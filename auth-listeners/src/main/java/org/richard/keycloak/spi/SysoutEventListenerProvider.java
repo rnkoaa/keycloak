@@ -8,6 +8,7 @@ import org.keycloak.events.EventType;
 import org.keycloak.events.admin.AdminEvent;
 import org.keycloak.events.admin.OperationType;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,9 +17,14 @@ import java.util.Map;
 public class SysoutEventListenerProvider implements EventListenerProvider {
 
     private final ProducerTemplate producerTemplate;
+    private final List<String> applicationIds;
+    private final List<String> realms;
 
-    SysoutEventListenerProvider(ProducerTemplate producerTemplate) {
+
+    SysoutEventListenerProvider(ProducerTemplate producerTemplate, List<String> applicationIds, List<String> realms) {
         this.producerTemplate = producerTemplate;
+        this.applicationIds = applicationIds;
+        this.realms = realms;
     }
 
 
@@ -29,7 +35,7 @@ public class SysoutEventListenerProvider implements EventListenerProvider {
         /*
             Process the event to emit if there was no error and the event was a registration
          */
-        if(Strings.isNullOrEmpty(event.getError()) && event.getType() == EventType.REGISTER){
+        if (Strings.isNullOrEmpty(event.getError()) && event.getType() == EventType.REGISTER) {
             System.out.println("***** Registered Received Event ******");
             System.out.println("EVENT: " + toString(event));
             KeycloakUserEvent.KeycloakUserEventBuilder userEventBuilder = KeycloakUserEvent.builder()
