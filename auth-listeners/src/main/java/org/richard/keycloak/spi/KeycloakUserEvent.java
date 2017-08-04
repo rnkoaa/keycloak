@@ -11,4 +11,5 @@ public class KeycloakUserEvent {
     private final String userId;
     private final String username;
     private final String email;
+    private final Long time;
 }

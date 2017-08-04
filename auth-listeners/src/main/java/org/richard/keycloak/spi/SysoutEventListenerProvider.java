@@ -17,13 +17,13 @@ import java.util.Map;
 public class SysoutEventListenerProvider implements EventListenerProvider {
 
     private final ProducerTemplate producerTemplate;
-    private final List<String> applicationIds;
+    private final List<String> clientIds;
     private final List<String> realms;
 
 
-    SysoutEventListenerProvider(ProducerTemplate producerTemplate, List<String> applicationIds, List<String> realms) {
+    SysoutEventListenerProvider(ProducerTemplate producerTemplate, List<String> clientIds, List<String> realms) {
         this.producerTemplate = producerTemplate;
-        this.applicationIds = applicationIds;
+        this.clientIds = clientIds;
         this.realms = realms;
     }
 
@@ -38,20 +38,49 @@ public class SysoutEventListenerProvider implements EventListenerProvider {
         if (Strings.isNullOrEmpty(event.getError()) && event.getType() == EventType.REGISTER) {
             System.out.println("***** Registered Received Event ******");
             System.out.println("EVENT: " + toString(event));
-            KeycloakUserEvent.KeycloakUserEventBuilder userEventBuilder = KeycloakUserEvent.builder()
-                    .userId(event.getUserId());
 
-            Map<String, String> eventDetails = event.getDetails();
-            if (event.getDetails() != null) {
-                userEventBuilder.email(eventDetails.getOrDefault("email", ""));
-                userEventBuilder.username(eventDetails.getOrDefault("username", ""));
+            /**
+             * Event should come from an client we are interested in
+             * within a particular realm.
+             * However, if no realm or client id is available, the event
+             * will be processed anyway since this will presumably be interested by all
+             * topics.
+             */
+            boolean shouldProcess = isEventInteresting(event);
+            if (shouldProcess) {
+                KeycloakUserEvent.KeycloakUserEventBuilder userEventBuilder = KeycloakUserEvent.builder()
+                        .userId(event.getUserId());
+
+                Map<String, String> eventDetails = event.getDetails();
+                if (event.getDetails() != null) {
+                    userEventBuilder.email(eventDetails.getOrDefault("email", ""));
+                    userEventBuilder.username(eventDetails.getOrDefault("username", ""));
+                }
+
+                KeycloakUserEvent keycloakUserEvent = userEventBuilder
+                        .time(event.getTime())
+                        .build();
+                //System.out.println(keycloakUserEvent);
+                producerTemplate.sendBody("kafka:{{application.kafka.topic.name}}", keycloakUserEvent.toString());
             }
-
-            KeycloakUserEvent keycloakUserEvent = userEventBuilder.build();
-            System.out.println(keycloakUserEvent);
-            producerTemplate.sendBody("direct:kafkaRoute", keycloakUserEvent.toString());
         }
         System.out.println("****************************");
+    }
+
+    private boolean isEventInteresting(Event event) {
+        String realmId = event.getRealmId();
+        String clientId = event.getClientId();
+
+        if (realms.size() > 0) {
+            if (!realms.contains(realmId))
+                return false;
+        }
+
+        if (clientIds.size() > 0) {
+            if (!clientIds.contains(clientId))
+                return false;
+        }
+        return true;
     }
 
     @Override
