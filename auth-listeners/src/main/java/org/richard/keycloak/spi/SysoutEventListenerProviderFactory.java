@@ -8,15 +8,18 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.kafka.KafkaComponent;
 import org.apache.camel.component.properties.PropertiesComponent;
+import org.apache.camel.component.properties.PropertiesResolver;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.keycloak.Config;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventListenerProviderFactory;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
+import org.richard.keycloak.spi.env.PropertyResolver;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -31,6 +34,16 @@ public class SysoutEventListenerProviderFactory implements EventListenerProvider
     private static final String INCLUDE_REALMS = "include.realms";
     private static final String INCLUDE_CLIENTS = "include.clients";
 
+    private static List<String> APPLICATION_PROPERTIES = new ArrayList<String>() {
+        {
+            add(APPLICATION_KAFKA_BROKERS_HOST);
+            add(APPLICATION_KAFKA_BROKERS_PORT);
+            add(APPLICATION_KAFKA_TOPIC_NAME);
+            add(INCLUDE_REALMS);
+            add(INCLUDE_CLIENTS);
+        }
+    };
+
     private SysoutEventListenerProvider sysoutEventListenerProvider;
 
     @Override
@@ -42,34 +55,38 @@ public class SysoutEventListenerProviderFactory implements EventListenerProvider
     @Override
     public void init(Config.Scope config) {
         System.out.println("SysoutEventListenerProviderFactory::init");
-
         Properties properties = resolveProperties(config);
         String includedRealms;
         String includedApplications;
-        if (properties != null)
-            properties.list(System.out);
+
+        // dump the properties for debug purposes, should guard the call
+        properties.list(System.out);
 
         includedApplications = properties.getProperty(INCLUDE_CLIENTS);
         includedRealms = properties.getProperty(INCLUDE_REALMS);
 
         List<String> realms = Lists.newArrayList();
-        List<String> applicationIds = Lists.newArrayList();
+        List<String> clientIds = Lists.newArrayList();
         if (!Strings.isNullOrEmpty(includedApplications)) {
-            applicationIds = Splitter.on(',').splitToList(includedApplications);
+            clientIds = Splitter.on(',').splitToList(includedApplications);
         }
+
+        // clientIds.forEach(clientId -> System.out.println("Client Id From Property: " + clientId));
 
         if (!Strings.isNullOrEmpty(includedRealms)) {
             realms = Splitter.on(',').splitToList(includedRealms);
         }
+
+        // realms.forEach(realm -> System.out.println("Realm From Property: " + realm));
         CamelContext camelContext = prepareCamelContext(properties);
 
         //a local cache which is built to determine where a given event will be published
         Map<String, String> topicMap = Maps.newHashMap();
         try {
-           // camelContext.addRoutes(new KafkaProducerRouteBuilder(topicMap));
+            // camelContext.addRoutes(new KafkaProducerRouteBuilder(topicMap));
             ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
             camelContext.start();
-            sysoutEventListenerProvider = new SysoutEventListenerProvider(producerTemplate, applicationIds, realms);
+            sysoutEventListenerProvider = new SysoutEventListenerProvider(producerTemplate, clientIds, realms);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,32 +107,11 @@ public class SysoutEventListenerProviderFactory implements EventListenerProvider
     }
 
     private Properties resolveProperties(Config.Scope config) {
-
-        //load default application properties. this is fine in local
-        // development but must be overridden in the standalone.xml or
-        // standalone-ha.xml or standalone-cluster.xml for it to be production ready
-        Properties classPathProperties = new Properties();
-        try (final InputStream stream =
-                     this.getClass()
-                             .getClassLoader()
-                             .getResourceAsStream("application.properties")) {
-            classPathProperties.load(stream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String includedRealms = config.get(INCLUDE_REALMS, classPathProperties.getProperty(INCLUDE_REALMS));
-        String includedApplications = config.get(INCLUDE_CLIENTS, classPathProperties.getProperty(INCLUDE_CLIENTS));
-        String kafkaBrokersHosts = config.get(APPLICATION_KAFKA_BROKERS_HOST, classPathProperties.getProperty(APPLICATION_KAFKA_BROKERS_HOST));
-        String kafkaBrokersPort = config.get(APPLICATION_KAFKA_BROKERS_PORT, classPathProperties.getProperty(APPLICATION_KAFKA_BROKERS_PORT));
-        String applicationTopicName = config.get(APPLICATION_KAFKA_TOPIC_NAME, classPathProperties.getProperty(APPLICATION_KAFKA_TOPIC_NAME));
-
+        PropertyResolver propertyResolver = new PropertyResolver(new String[]{"application.properties"}, config);
+        Map<String, String> resolvedProperties = propertyResolver.resolveProperties(APPLICATION_PROPERTIES);
         Properties properties = new Properties();
-        properties.setProperty(APPLICATION_KAFKA_BROKERS_HOST, kafkaBrokersHosts);
-        properties.setProperty(APPLICATION_KAFKA_BROKERS_PORT, kafkaBrokersPort);
-        properties.setProperty(APPLICATION_KAFKA_TOPIC_NAME, applicationTopicName);
-        properties.setProperty(INCLUDE_REALMS, includedRealms);
-        properties.setProperty(INCLUDE_CLIENTS, includedApplications);
+        properties.putAll(resolvedProperties);
+
         return properties;
     }
 

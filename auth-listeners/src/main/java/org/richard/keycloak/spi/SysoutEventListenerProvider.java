@@ -1,6 +1,8 @@
 package org.richard.keycloak.spi;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import org.apache.camel.ProducerTemplate;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
@@ -11,10 +13,14 @@ import org.keycloak.events.admin.OperationType;
 import java.util.List;
 import java.util.Map;
 
+import org.jboss.logging.Logger;
+
 /**
  * Created by 7/26/17.
  */
 public class SysoutEventListenerProvider implements EventListenerProvider {
+
+    private static final Logger LOG = Logger.getLogger(SysoutEventListenerProvider.class);
 
     private final ProducerTemplate producerTemplate;
     private final List<String> clientIds;
@@ -30,14 +36,15 @@ public class SysoutEventListenerProvider implements EventListenerProvider {
 
     @Override
     public void onEvent(Event event) {
-        System.out.println("SysoutEventListenerProvider::OnEvent...");
-
+        LOG.info("SysoutEventListenerProvider::OnEvent...");
+        System.out.println("Realms: " + Joiner.on(",").join(realms));
+        System.out.println("Client Ids: " + Joiner.on(",").join(clientIds));
         /*
             Process the event to emit if there was no error and the event was a registration
          */
         if (Strings.isNullOrEmpty(event.getError()) && event.getType() == EventType.REGISTER) {
-            System.out.println("***** Registered Received Event ******");
-            System.out.println("EVENT: " + toString(event));
+            LOG.info("***** Registered Received Event ******");
+            LOG.info("EVENT: " + toString(event));
 
             /**
              * Event should come from an client we are interested in
@@ -47,6 +54,8 @@ public class SysoutEventListenerProvider implements EventListenerProvider {
              * topics.
              */
             boolean shouldProcess = isEventInteresting(event);
+            System.out.println("Should Process: " + shouldProcess);
+
             if (shouldProcess) {
                 KeycloakUserEvent.KeycloakUserEventBuilder userEventBuilder = KeycloakUserEvent.builder()
                         .userId(event.getUserId());
@@ -64,12 +73,14 @@ public class SysoutEventListenerProvider implements EventListenerProvider {
                 producerTemplate.sendBody("kafka:{{application.kafka.topic.name}}", keycloakUserEvent.toString());
             }
         }
-        System.out.println("****************************");
+        LOG.info("****************************");
     }
 
     private boolean isEventInteresting(Event event) {
         String realmId = event.getRealmId();
         String clientId = event.getClientId();
+        System.out.println("Event Realm Id: " + realmId);
+        System.out.println("Event Client Id: " + clientId);
 
         if (realms.size() > 0) {
             if (!realms.contains(realmId))
@@ -85,12 +96,12 @@ public class SysoutEventListenerProvider implements EventListenerProvider {
 
     @Override
     public void onEvent(AdminEvent event, boolean includeRepresentation) {
-        System.out.println("SysoutEventListenerProvider::onAdminEvent...");
+        LOG.info("SysoutEventListenerProvider::onAdminEvent...");
         if (event.getOperationType() == OperationType.CREATE) {
-            System.out.println("***** Registered Received Event ******");
-            System.out.println("EVENT: " + toString(event));
+            LOG.info("***** Registered Received Event ******");
+            LOG.info("EVENT: " + toString(event));
         }
-        System.out.println("****************************");
+        LOG.info("****************************");
     }
 
     private String toString(Event event) {
@@ -156,7 +167,7 @@ public class SysoutEventListenerProvider implements EventListenerProvider {
 
     @Override
     public void close() {
-        System.out.println("SysoutEventListenerProvider::close");
+        LOG.info("SysoutEventListenerProvider::close");
     }
 
 }

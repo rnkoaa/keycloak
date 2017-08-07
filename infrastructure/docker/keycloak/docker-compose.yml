@@ -15,3 +15,11 @@ services:
       - "$HOME/docker/keycloak/standalone/data:/opt/jboss/keycloak/standalone/data"
       - "$HOME/docker/keycloak/standalone/log:/opt/jboss/keycloak/standalone/log"
 #      - "/opt/jboss/keycloak/standalone/data is where the H2 data is stored, /opt/jboss/keycloak/standalone/log"
+    networks:
+      - keycloak_infrastructure
+    environment:
+      - "application.kafka.brokers.host=kafka"
+
+networks:
+  keycloak_infrastructure:
+    external: true
