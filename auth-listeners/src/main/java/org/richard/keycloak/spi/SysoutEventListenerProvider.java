@@ -2,8 +2,8 @@ package org.richard.keycloak.spi;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import org.apache.camel.ProducerTemplate;
+import org.jboss.logging.Logger;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventType;
@@ -12,8 +12,6 @@ import org.keycloak.events.admin.OperationType;
 
 import java.util.List;
 import java.util.Map;
-
-import org.jboss.logging.Logger;
 
 /**
  * Created by 7/26/17.

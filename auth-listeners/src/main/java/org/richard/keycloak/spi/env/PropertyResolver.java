@@ -1,5 +1,6 @@
 package org.richard.keycloak.spi.env;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Streams;
 import org.keycloak.Config;
@@ -52,7 +53,18 @@ public class PropertyResolver {
     }
 
     public String resolveProperty(String propertyName) {
-        String property = System.getProperty(propertyName);
+        String envProperty = propertyName;
+        envProperty = envProperty.replace(".", "_").toUpperCase();
+        String property = System.getenv(envProperty);
+
+        System.out.println("Resolved Property: " + envProperty + " Environment: " + property);
+        Map<String, String> systemEnv = System.getenv();
+        final Joiner.MapJoiner mapJoiner = Joiner.on('&').withKeyValueSeparator("=");
+
+        String join = mapJoiner.join(systemEnv);
+        System.out.println("*********************************");
+        System.out.println(join);
+        System.out.println("*********************************");
         if (Strings.isNullOrEmpty(property)) {
             //resolve from the properties file
             property = config.get(propertyName);

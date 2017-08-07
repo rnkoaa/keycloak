@@ -12,9 +12,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class PropertyResolverTest {
 
-    public static final String EVENT_LISTENER_APPLICATION_NAME = "event.listener.application.name";
-    public static final String TEST_KAFKA_TOPIC = "application.kafka.topic.name";
-    public static final String TEST_KAFKA_BROKERS_HOST = "application.kafka.brokers.host";
+    private static final String EVENT_LISTENER_APPLICATION_NAME = "application.name";
+    private static final String TEST_KAFKA_TOPIC = "application.kafka.topic.name";
+    private static final String TEST_KAFKA_BROKERS_HOST = "application.kafka.brokers.host";
     private PropertyResolver propertyResolver;
 
     @Before
@@ -23,13 +23,13 @@ public class PropertyResolverTest {
 
     @Test
     public void resolveEnvironmentProperty() {
+        String environmentKey = EVENT_LISTENER_APPLICATION_NAME.replace('.', '_').toUpperCase();
+        System.clearProperty(environmentKey);
+        System.setProperty(environmentKey, "RegistrationEvents");
         propertyResolver = new PropertyResolver(new Config.SystemPropertiesScope("event.listener"));
-        System.clearProperty("application.name");
-        System.out.println(System.getProperty("event.listener.application.name"));
-        System.setProperty(EVENT_LISTENER_APPLICATION_NAME, "RegistrationEventPublisher");
 
         String eventListenerApplicationName = propertyResolver.resolveProperty(EVENT_LISTENER_APPLICATION_NAME);
-        assertThat(eventListenerApplicationName).isNotNull().isNotBlank();
+        assertThat(eventListenerApplicationName).isNotNull().isNotBlank().isEqualTo("RegistrationEvents");
         System.out.println(eventListenerApplicationName);
 
     }
@@ -55,8 +55,8 @@ public class PropertyResolverTest {
 
         String eventListenerApplicationName = propertyResolver.resolveProperty(TEST_KAFKA_BROKERS_HOST);
         assertThat(eventListenerApplicationName).isNotNull().isNotBlank()
-                .isNotEqualTo("localhost")
-                .isEqualTo("kafka");
+                .isEqualTo("localhost")
+                .isNotEqualTo("kafka");
         System.out.println(eventListenerApplicationName);
 
     }
