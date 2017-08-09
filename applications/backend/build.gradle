@@ -1,0 +1,71 @@
+buildscript {
+  ext {
+    springBootVersion = '1.5.4.RELEASE'
+    keycloakVersion = '3.2.0.Final'
+  }
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+  }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+  mavenCentral()
+}
+
+
+dependencies {
+  compile('org.springframework.boot:spring-boot-starter-actuator')
+  compile("org.springframework.boot:spring-boot-starter-web") {
+    exclude module: "spring-boot-starter-tomcat"
+  }
+  compile("org.springframework.boot:spring-boot-starter-undertow")
+  compile("org.springframework.boot:spring-boot-starter-security")
+/*  compile("org.springframework.security.oauth:spring-security-oauth2")*/
+
+  compile("org.keycloak:keycloak-spring-boot-starter")
+  runtime('org.springframework.boot:spring-boot-devtools')
+
+  compileOnly('org.springframework.boot:spring-boot-configuration-processor')
+  compileOnly('org.projectlombok:lombok')
+
+  compile("org.thymeleaf:thymeleaf:3.0.6.RELEASE")
+  compile("org.thymeleaf:thymeleaf-spring4:3.0.6.RELEASE")
+
+  //Keycloak dependencies
+  compile("org.keycloak:keycloak-spring-boot-adapter:${keycloakVersion}")
+  compile("org.keycloak:keycloak-undertow-adapter:${keycloakVersion}")
+  //compile("org.thymeleaf.extras:thymeleaf-extras-springsecurity4")
+  compile("org.thymeleaf.extras:thymeleaf-extras-java8time")
+  compile("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:2.2.2")
+
+  testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+task copyFrontendDist(type: Copy) {
+  from("../frontend/dist")
+  into("$buildDir/resources/main/public")
+}
+/**
+ * Anytime we build the resources, npm should be run on the frontend
+ * to ensure we have fresh content
+ */
+copyFrontendDist.dependsOn(':frontend:build')
+processResources.dependsOn('copyFrontendDist')
+
+
+dependencyManagement {
+  imports {
+  //  mavenBom "org.springframework.cloud:spring-cloud-dependencies:Camden.SR6"
+    mavenBom("org.keycloak.bom:keycloak-adapter-bom:${keycloakVersion}")
+  }
+}

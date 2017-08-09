@@ -1,0 +1,4 @@
+rootProject.name = 'backend'
+
+include ':frontend'
+project(':frontend').projectDir = new File('../frontend')

@@ -1,0 +1,8 @@
+{
+    "realm": "spring-angular",
+    "auth-server-url": "http://192.168.99.100:8081/auth",
+    "ssl-required": "external",
+    "resource": "spring-angular-frontend",
+    "public-client": true,
+    "use-resource-role-mappings": true
+}

@@ -1,0 +1,26 @@
+plugins {
+  id "com.moowork.node" version "0.12"
+}
+
+version '1.0.0-SNAPSHOT'
+
+node {
+  version = '8.1.4'
+  npmVersion = '5.3.0'
+//  yarnVersion = '0.22.0'
+  download = false
+  workDir = file("${project.buildDir}/node")
+  nodeModulesDir = file("${project.projectDir}")
+}
+
+task build(type: NpmTask) {
+  args = ['run', 'build']
+}
+
+task clean {
+  doLast {
+    new File('./dist').deleteDir()
+  }
+}
+
+build.dependsOn(npm_install)

@@ -1,0 +1,5 @@
+https://hub.docker.com/r/kanej/keycloak/~/dockerfile/
+
+https://keycloak.gitbooks.io/documentation/server_development/topics/themes.html
+
+bin/jboss-cli.sh --command="module add --name=org.example.mytheme --resources=mytheme.zip"
