@@ -56,7 +56,8 @@ public class SysoutEventListenerProvider implements EventListenerProvider {
 
             if (shouldProcess) {
                 KeycloakUserEvent.KeycloakUserEventBuilder userEventBuilder = KeycloakUserEvent.builder()
-                        .userId(event.getUserId());
+                        .userId(event.getUserId())
+                        .time(event.getTime());
 
                 Map<String, String> eventDetails = event.getDetails();
                 if (event.getDetails() != null) {
@@ -65,9 +66,8 @@ public class SysoutEventListenerProvider implements EventListenerProvider {
                 }
 
                 KeycloakUserEvent keycloakUserEvent = userEventBuilder
-                        .time(event.getTime())
+
                         .build();
-                //System.out.println(keycloakUserEvent);
                 producerTemplate.sendBody("kafka:{{application.kafka.topic.name}}", keycloakUserEvent.toString());
             }
         }

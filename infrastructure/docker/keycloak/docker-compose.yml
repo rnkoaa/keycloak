@@ -18,7 +18,8 @@ services:
     networks:
       - keycloak_infrastructure
     environment:
-      - "application.kafka.brokers.host=kafka"
+      - "APPLICATION_KAFKA_BROKERS_HOST=kafka"
+      - "APPLICATION_KAFKA_TOPIC_NAME=registration-events"
 
 networks:
   keycloak_infrastructure:

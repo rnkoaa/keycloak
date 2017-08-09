@@ -4,6 +4,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Streams;
 import org.keycloak.Config;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +18,7 @@ import java.util.stream.Stream;
 public class PropertyResolver {
     private final Config.Scope config;
     private Properties classPathProperties;
+    private static final Logger logger = LoggerFactory.getLogger(PropertyResolver.class);
 
     public PropertyResolver(Config.Scope config) {
         classPathProperties = new Properties();
@@ -54,17 +57,17 @@ public class PropertyResolver {
 
     public String resolveProperty(String propertyName) {
         String envProperty = propertyName;
-        envProperty = envProperty.replace(".", "_").toUpperCase();
+        envProperty = updateProperty(envProperty);
         String property = System.getenv(envProperty);
 
-        System.out.println("Resolved Property: " + envProperty + " Environment: " + property);
+        logger.info("Resolved Property: " + envProperty + " Environment: " + property);
         Map<String, String> systemEnv = System.getenv();
         final Joiner.MapJoiner mapJoiner = Joiner.on('&').withKeyValueSeparator("=");
 
         String join = mapJoiner.join(systemEnv);
-        System.out.println("*********************************");
-        System.out.println(join);
-        System.out.println("*********************************");
+        logger.info("*********************************");
+        logger.info(join);
+        logger.info("*********************************");
         if (Strings.isNullOrEmpty(property)) {
             //resolve from the properties file
             property = config.get(propertyName);
@@ -72,6 +75,10 @@ public class PropertyResolver {
                 property = classPathProperties.getProperty(propertyName, "");
         }
         return property;
+    }
+
+    private String updateProperty(String envProperty) {
+        return envProperty.replace(".", "_").toUpperCase();
     }
 
     public Map<String, String> resolveProperties(String[] propertyNames) {
