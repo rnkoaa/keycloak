@@ -22,7 +22,7 @@ sourceCompatibility = 1.8
 shadowJar {
     configurations = [project.configurations.compile]
 
-    baseName = 'keycloak-registration-provider'
+    baseName = 'registration-provider'
     classifier = null
     version = null
 }
