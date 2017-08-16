@@ -7,8 +7,8 @@ export class KeycloakService {
   static auth: any = {};
 
   static init(): Promise<any> {
-    //const keycloakAuth: any = Keycloak(`keycloak/keycloak-${environment.name}.json`);
-    
+    // const keycloakAuth: any = Keycloak(`keycloak/keycloak-${environment.name}.json`);
+
     const keycloakAuth: any = Keycloak(environment.keycloak);
     KeycloakService.auth.loggedIn = false;
 
@@ -18,7 +18,9 @@ export class KeycloakService {
           console.log(`Keycloak Auth: ${keycloakAuth.authenticated}`);
           KeycloakService.auth.loggedIn = keycloakAuth.authenticated;
           KeycloakService.auth.authz = keycloakAuth;
-          console.log(`${JSON.stringify(keycloakAuth.authServerUrl)}`);
+          console.log(KeycloakService.auth.authz.idToken);
+          // console.log(JSON.stringify(KeycloakService.auth));
+         // console.log(`${JSON.stringify(keycloakAuth.authServerUrl)}`);
           KeycloakService.auth.logoutUrl = keycloakAuth.authServerUrl
             + `/realms/${environment.keycloak.realm}/protocol/openid-connect/logout?redirect_uri=${environment.origin}`;
           resolve();

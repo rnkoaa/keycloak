@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 /**
  * Created by 7/17/17.
  */
-@Configuration
+/*@Configuration*/
 public class WebConfig {
   /*@Bean
   public CorsFilter corsFilter() {

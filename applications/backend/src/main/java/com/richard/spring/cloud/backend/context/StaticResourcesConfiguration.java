@@ -16,8 +16,8 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 import java.io.IOException;
 import java.util.Arrays;
 
-@Configuration
-@EnableConfigurationProperties({ResourceProperties.class})
+/*@Configuration
+@EnableConfigurationProperties({ResourceProperties.class})*/
 public class StaticResourcesConfiguration extends WebMvcConfigurerAdapter {
 
   private static final String[] STATIC_RESOURCES = new String[]{

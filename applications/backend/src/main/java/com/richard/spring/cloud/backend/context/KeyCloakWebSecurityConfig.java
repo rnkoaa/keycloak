@@ -44,6 +44,10 @@ public class KeyCloakWebSecurityConfig extends KeycloakWebSecurityConfigurerAdap
     return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
   }
 
+  /**
+   *  Use Spring boot config file to configure keycloak
+   * @return
+   */
   @Bean
   public KeycloakConfigResolver KeycloakConfigResolver() {return new KeycloakSpringBootConfigResolver();}
 

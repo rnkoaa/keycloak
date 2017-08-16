@@ -59,8 +59,8 @@ task copyFrontendDist(type: Copy) {
  * Anytime we build the resources, npm should be run on the frontend
  * to ensure we have fresh content
  */
-copyFrontendDist.dependsOn(':frontend:build')
-processResources.dependsOn('copyFrontendDist')
+// copyFrontendDist.dependsOn(':frontend:build')
+// processResources.dependsOn('copyFrontendDist')
 
 
 dependencyManagement {
