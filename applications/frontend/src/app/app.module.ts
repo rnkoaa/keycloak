@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule, Http, XHRBackend, RequestOptions } from '@angular/http';
-import { provideAuth } from 'angular2-jwt';
 
 import { AppComponent } from './app.component';
 
@@ -18,6 +17,7 @@ import { UnauthorizedComponent } from './shared/unauthorized/unauthorized.compon
 import { KeycloakService } from './shared/services/keycloak.service';
 import { AuthGuardService } from './shared/services/auth-guard.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { AuthService } from './shared/services/auth.service';
 
 @NgModule({
   declarations: [
@@ -34,10 +34,12 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     BrowserModule,
     FormsModule,
     HttpModule,
+    // AuthModule,
     routes
   ],
   providers: [
     KeycloakService,
+    AuthService,
     AuthGuardService,
     UserAccountService,
     appRoutingProviders

@@ -5,6 +5,7 @@ import { UserAccount } from './user-account';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import { KeycloakService } from '../shared/services/keycloak.service';
+import { AuthService } from '../shared/services/auth.service';
 
 @Injectable()
 export class UserAccountService {
@@ -14,10 +15,10 @@ export class UserAccountService {
   private myAccountUrl = 'http://localhost:8081/api/me';
 
   constructor(private http: Http,
-    private keycloak: KeycloakService) { }
+    private authService: AuthService) { }
 
   me() {
-    this.keycloak.getToken()
+    /*this.authService.getToken()
       .then(token => {
         // console.log(`Keycloak Token: ${token}`);
         const headers = new Headers({
@@ -37,7 +38,7 @@ export class UserAccountService {
       })
       .catch(error => {
         console.log('Error retrieving token');
-      });
+      });*/
   }
 
   // Implement a method to handle errors if any

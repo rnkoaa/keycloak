@@ -29,25 +29,5 @@ export class KeycloakService {
     });
   }
 
-  logout() {
-    console.log('*** LOGOUT');
-    KeycloakService.auth.loggedIn = false;
-    KeycloakService.auth.authz = null;
 
-    window.location.href = KeycloakService.auth.logoutUrl;
-  }
-
-  getToken(): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-      if (KeycloakService.auth.authz.token) {
-        KeycloakService.auth.authz.updateToken(5)
-          .success(() => {
-            resolve(<string>KeycloakService.auth.authz.token);
-          })
-          .error(() => {
-            reject('Failed to refresh token');
-          });
-      }
-    });
-  }
 }

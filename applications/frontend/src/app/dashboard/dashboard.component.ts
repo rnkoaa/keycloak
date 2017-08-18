@@ -4,7 +4,8 @@ import * as Keycloak from 'keycloak-js';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { environment } from 'environments/environment';
-import { KeycloakService } from 'app/shared/services/keycloak.service';
+import { KeycloakService } from '../shared/services/keycloak.service';
+import { AuthService } from '../shared/services/auth.service';
 
 declare var jQuery: any;
 
@@ -15,14 +16,17 @@ declare var jQuery: any;
 })
 export class DashboardComponent implements OnInit {
 
-  constructor(private _keycloakServe: KeycloakService) { }
+  constructor(private _authService: AuthService) { }
 
   ngOnInit() {
-    this._keycloakServe.getToken().then(token => {
-      console.log(`keycloak token: ${token}`);
-    }).catch(err => {
-      console.log('Error retrieving token');
-    })
+    this._authService
+      .isLoggedIn()
+      .then(loggedIn => {
+        console.log(`Is User Logged In: ${loggedIn}`)
+      })
+      .catch(err => {
+        console.log(`Error isLoggedIn: ${err}`)
+      });
   }
 
 }

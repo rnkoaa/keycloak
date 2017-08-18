@@ -5,7 +5,7 @@ import { environment } from 'environments/environment';
 
 @Injectable()
 export class AuthGuardService implements CanActivate {
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot):  Promise<boolean> {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
     return new Promise((resolve, reject) => {
       if (KeycloakService.auth.loggedIn) {
         resolve(true);
@@ -17,12 +17,12 @@ export class AuthGuardService implements CanActivate {
         console.log(`keycloak clientId: ${clientId}`);
 
         const redirectUrl =
-        `${authServerUrl}/realms/${realm}/protocol/openid-connect/auth`
-        + `?client_id=${clientId}&redirect_uri=${environment.origin}`
-        + `&response_mode=fragment&response_type=code&scope=openid`;
-       window.location.href = redirectUrl;
+          `${authServerUrl}/realms/${realm}/protocol/openid-connect/auth`
+          + `?client_id=${clientId}&redirect_uri=${environment.origin}`
+          + `&response_mode=fragment&response_type=code&scope=openid`;
+        window.location.href = redirectUrl;
 
-       reject(false);
+        reject(false);
       }
     });
   }

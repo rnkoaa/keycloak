@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { KeycloakService } from '../services/keycloak.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -8,7 +8,7 @@ import { KeycloakService } from '../services/keycloak.service';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(private keycloakService: KeycloakService) { }
+  constructor(private _authService: AuthService) { }
 
   ngOnInit() {
   }
@@ -16,7 +16,7 @@ export class HeaderComponent implements OnInit {
   logout(event) {
     event.preventDefault();
     console.log('logout button clicked.');
-    this.keycloakService.logout();
+    this._authService.logout();
   }
 
 }
