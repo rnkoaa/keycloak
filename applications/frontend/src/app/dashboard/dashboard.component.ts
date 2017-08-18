@@ -1,8 +1,10 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
-
+import * as Keycloak from 'keycloak-js';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
+import { environment } from 'environments/environment';
+import { KeycloakService } from 'app/shared/services/keycloak.service';
 
 declare var jQuery: any;
 
@@ -13,9 +15,14 @@ declare var jQuery: any;
 })
 export class DashboardComponent implements OnInit {
 
-  constructor() { }
+  constructor(private _keycloakServe: KeycloakService) { }
 
   ngOnInit() {
+    this._keycloakServe.getToken().then(token => {
+      console.log(`keycloak token: ${token}`);
+    }).catch(err => {
+      console.log('Error retrieving token');
+    })
   }
 
 }

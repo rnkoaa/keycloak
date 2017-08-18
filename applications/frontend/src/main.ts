@@ -55,5 +55,5 @@ KeycloakService.init()
   })
   .catch(() => window.location.reload());
 
-// const platform = platformBrowserDynamic();
-// platform.bootstrapModule(AppModule);
+ // const platform = platformBrowserDynamic();
+ // platform.bootstrapModule(AppModule);

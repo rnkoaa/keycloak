@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
+// import { environment } from '../../../environments/environment';
 import * as Keycloak from 'keycloak-js';
+import { environment } from 'environments/environment';
 
 @Injectable()
 export class KeycloakService {
   static auth: any = {};
 
   static init(): Promise<any> {
-    // const keycloakAuth: any = Keycloak(`keycloak/keycloak-${environment.name}.json`);
-
     const keycloakAuth: any = Keycloak(environment.keycloak);
     KeycloakService.auth.loggedIn = false;
 
@@ -18,12 +17,13 @@ export class KeycloakService {
           console.log(`Keycloak Auth: ${keycloakAuth.authenticated}`);
           KeycloakService.auth.loggedIn = keycloakAuth.authenticated;
           KeycloakService.auth.authz = keycloakAuth;
-          console.log(KeycloakService.auth.authz.idToken);
           KeycloakService.auth.logoutUrl = keycloakAuth.authServerUrl
             + `/realms/${environment.keycloak.realm}/protocol/openid-connect/logout?redirect_uri=${environment.origin}`;
           resolve();
         })
-        .error(() => {
+        .error((err) => {
+          console.log('Error Occurred Initializing Keycloak Service.')
+          console.log(`${JSON.stringify(err)}`)
           reject();
         });
     });

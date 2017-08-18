@@ -3,11 +3,12 @@ export const environment = {
   name: 'standalone',
   origin: '',
   keycloak: {
-    'realm': 'master',
-    'auth-server-url': 'http://localhost:8080/auth',
+    'realm': 'spring-angular',
+    'auth-server-url': 'http://localhost:8081/auth',
+    'url': 'http://localhost:8081/auth',
     'ssl-required': 'external',
-    'resource': 'spring-angular-frontend',
-    'public-client': true,
-    'use-resource-role-mappings': true
+    'resource': 'frontend',
+    'clientId': 'frontend',
+    'public-client': true
   }
 };

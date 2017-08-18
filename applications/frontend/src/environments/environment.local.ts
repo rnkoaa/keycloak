@@ -8,7 +8,7 @@ export const environment = {
     'url': 'http://localhost:8081/auth',
     'ssl-required': 'external',
     'resource': 'frontend',
-    'public-client': true,
-    'use-resource-role-mappings': true
+    'clientId': 'frontend',
+    'public-client': true
   }
 };

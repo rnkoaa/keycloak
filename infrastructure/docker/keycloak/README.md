@@ -1,6 +1,12 @@
 
 ## Create an admin account on master realm using shell command
 
+To Add a user via docker command
+```sh
+docker exec keycloak /opt/jboss/keycloak/bin/add-user-keycloak.sh -r master -u admin -p admin
+docker restart keycloak
+```
+
 ```sh
 ./add-user-keycloak.sh -r master -u admin -p admin
 ```
