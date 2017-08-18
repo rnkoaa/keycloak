@@ -13,27 +13,29 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Created on 7/17/2017.
  */
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "/api")
 public class HomeController {
-  private AtomicLong atomicLong = new AtomicLong(0);
+    private AtomicLong atomicLong = new AtomicLong(0);
 
-  @GetMapping({"", "/"})
-  @CrossOrigin(origins = "*", maxAge = 3600)
-  public Map<String, String> index() {
-    Map<String, String> map = new HashMap<>();
-    map.put(String.valueOf(atomicLong.incrementAndGet()), String.valueOf(System.currentTimeMillis()));
-    return map;
-  }
+    @GetMapping({"", "/"})
+    @CrossOrigin(origins = "*", maxAge = 3600)
+    public Map<String, String> index() {
+        Map<String, String> map = new HashMap<>();
+        map.put(String.valueOf(atomicLong.incrementAndGet()), String.valueOf(System.currentTimeMillis()));
+        return map;
+    }
 
-  @GetMapping({"/me"})
-  public UserAccount me() {
-    return UserAccount.builder()
-      .firstName("Richard")
-      .lastName("Ag")
-      .userId("123")
-      .password("1234")
-      .username("haha")
-      .build();
-  }
+    @GetMapping({"/me"})
+    @CrossOrigin(origins = "*", maxAge = 3600)
+    public UserAccount me() {
+        return UserAccount.builder()
+                .firstName("Richard")
+                .lastName("Ag")
+                .userId("123")
+                .password("1234")
+                .username("haha")
+                .build();
+    }
 }

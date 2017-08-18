@@ -6,45 +6,62 @@ import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import { KeycloakService } from '../shared/services/keycloak.service';
 import { AuthService } from '../shared/services/auth.service';
+import { HttpErrorResponse, HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class UserAccountService {
 
   // Define the routes we are going to interact with
   // private myAccountUrl = '/api/me';
-  private myAccountUrl = 'http://localhost:8081/api/me';
+  private myAccountUrl = 'http://localhost:8080/api/me';
 
-  constructor(private http: Http,
+  constructor(private http: HttpClient,
     private authService: AuthService) { }
 
   me() {
+
+    //
     /*this.authService.getToken()
       .then(token => {
-        // console.log(`Keycloak Token: ${token}`);
+        console.log(`Keycloak Token: ${token}`);
         const headers = new Headers({
           'Accept': 'application/json',
-          'Authorization': 'Bearer ' + token
+          'Authorization': `Bearer ${token}`
         });
 
         const options = new RequestOptions({ headers });
-
         this.http.get(this.myAccountUrl, options)
           .map(res => res.json())
           .subscribe(myAccount => {
             console.log(myAccount);
-          },
-
-            error => console.log(error));
-      })
-      .catch(error => {
-        console.log('Error retrieving token');
+          }, (err: HttpErrorResponse) => {
+            // console.log(error)
+            if (err.error instanceof Error) {
+              // A client-side or network error occurred. Handle it accordingly.
+              console.log('An error occurred:', err.error.message);
+            } else {
+              // The backend returned an unsuccessful response code.
+              // The response body may contain clues as to what went wrong,
+              console.log(`Backend returned code ${err.status}, body was: ${err.error}`);
+            }
+          });
       });*/
-  }
 
-  // Implement a method to handle errors if any
-  private handleError(error: any): Promise<any> {
-    console.error('An error occurred', error);
-    return Promise.reject(error.message || error);
+      this.http.get(this.myAccountUrl)
+      // .map(res => res)
+      .subscribe(myAccount => {
+        console.log(myAccount);
+      }, (err: HttpErrorResponse) => {
+        // console.log(error)
+        if (err.error instanceof Error) {
+          // A client-side or network error occurred. Handle it accordingly.
+          console.log('An error occurred:', err.error.message);
+        } else {
+          // The backend returned an unsuccessful response code.
+          // The response body may contain clues as to what went wrong,
+          console.log(`Backend returned code ${err.status}, body was: ${err.error}`);
+        }
+      });
   }
 
 }

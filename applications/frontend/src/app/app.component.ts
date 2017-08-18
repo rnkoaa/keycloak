@@ -6,8 +6,6 @@ import 'rxjs/add/operator/map';
 
 import { UserAccountService } from './user-account/user-account.service';
 
-import { environment } from '../environments/environment';
-
 declare var jQuery: any;
 
 @Component({
@@ -20,8 +18,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   products: string[] = [];
 
   constructor(
-    private userAccountService: UserAccountService,
-    private http: Http
+    private userAccountService: UserAccountService
   ) { }
 
   ngAfterViewInit() {
@@ -30,8 +27,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.userAccountService.me();
-    console.log(`OnInit Initiated.`);
-    console.log(environment.name);
   }
 
   logout() {
@@ -43,6 +38,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   goToLogin() {
-    //window.location.href = 'http://localhost:8080/login?redirect=http://localhost:4200/';
+    // window.location.href = 'http://localhost:8080/login?redirect=http://localhost:4200/';
   }
 }

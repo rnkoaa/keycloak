@@ -14,7 +14,6 @@ export class KeycloakService {
     return new Promise((resolve, reject) => {
       keycloakAuth.init({ onLoad: 'check-sso' })
         .success(() => {
-          console.log(`Keycloak Auth: ${keycloakAuth.authenticated}`);
           KeycloakService.auth.loggedIn = keycloakAuth.authenticated;
           KeycloakService.auth.authz = keycloakAuth;
           KeycloakService.auth.logoutUrl = keycloakAuth.authServerUrl
@@ -24,7 +23,7 @@ export class KeycloakService {
         .error((err) => {
           console.log('Error Occurred Initializing Keycloak Service.')
           console.log(`${JSON.stringify(err)}`)
-          reject();
+          reject(err);
         });
     });
   }
