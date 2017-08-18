@@ -12,8 +12,9 @@ export class AuthGuardService implements CanActivate {
       } else {
         const authServerUrl = environment.keycloak['auth-server-url'];
         const realm = environment.keycloak['realm'];
+        const clientId = environment.keycloak['resource'];
         const redirectUrl =
-        `${authServerUrl}/realms/${realm}/protocol/openid-connect/auth?client_id=${environment.keycloak.clientId}&redirect_uri=${environment.origin}&response_mode=fragment&response_type=code&scope=openid`;
+        `${authServerUrl}/realms/${realm}/protocol/openid-connect/auth?client_id=${clientId}&redirect_uri=${environment.origin}&response_mode=fragment&response_type=code&scope=openid`;
         window.location.href = redirectUrl;
         reject(false);
       }

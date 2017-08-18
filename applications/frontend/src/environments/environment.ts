@@ -9,8 +9,8 @@ export const environment = {
   origin: 'http://localhost:4200',
   keycloak: {
     'realm': 'master',
-    'auth-server-url': 'http://localhost:8080/auth',
-    'url': 'http://localhost:8080/auth',
+    'auth-server-url': 'http://localhost:8081/auth',
+    'url': 'http://localhost:8081/auth',
     'ssl-required': 'external',
     'logout-url': '',
     'resource': 'spring-angular-frontend',

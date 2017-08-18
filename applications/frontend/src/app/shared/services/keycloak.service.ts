@@ -19,8 +19,6 @@ export class KeycloakService {
           KeycloakService.auth.loggedIn = keycloakAuth.authenticated;
           KeycloakService.auth.authz = keycloakAuth;
           console.log(KeycloakService.auth.authz.idToken);
-          // console.log(JSON.stringify(KeycloakService.auth));
-         // console.log(`${JSON.stringify(keycloakAuth.authServerUrl)}`);
           KeycloakService.auth.logoutUrl = keycloakAuth.authServerUrl
             + `/realms/${environment.keycloak.realm}/protocol/openid-connect/logout?redirect_uri=${environment.origin}`;
           resolve();
