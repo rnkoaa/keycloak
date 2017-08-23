@@ -47,3 +47,11 @@ https://medium.com/@robince885/angular-2-project-with-bootstrap-1e6fc82dc017
 ## Resolve Guard
 
 http://shermandigital.com/blog/wait-for-data-before-rendering-views-in-angular-2/
+
+## Fonts to Use
+
+```css
+body {
+    font-family;  "Nunito","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+```

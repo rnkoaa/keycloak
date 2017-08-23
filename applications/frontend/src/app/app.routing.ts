@@ -12,7 +12,7 @@ export const router: Routes = [
   // { path: '', component: PokemonListComponent }
   {
     path: '',
-    canActivate: [AuthGuardService],
+    // canActivate: [AuthGuardService],
     component: DashboardComponent
   },
   { path: 'unauthorized', component: UnauthorizedComponent }

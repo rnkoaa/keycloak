@@ -19,14 +19,14 @@ export class DashboardComponent implements OnInit {
   constructor(private _authService: AuthService) { }
 
   ngOnInit() {
-    this._authService
+    /* this._authService
       .isLoggedIn()
       .then(loggedIn => {
         console.log(`Is User Logged In: ${loggedIn}`)
       })
       .catch(err => {
         console.log(`Error isLoggedIn: ${err}`)
-      });
+      });*/
   }
 
 }

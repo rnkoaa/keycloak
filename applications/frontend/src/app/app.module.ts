@@ -9,7 +9,6 @@ import { JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
 import { routes, appRoutingProviders } from './app.routing';
 
 import { UserAccountService } from './user-account/user-account.service';
-import { NavbarComponent } from './shared/navbar/navbar.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { LoaderComponent } from './shared/loader/loader.component';
 import { HeaderComponent } from './shared/header/header.component';
@@ -33,7 +32,6 @@ import { HttpInterceptorService } from './shared/services/http-interceptor.servi
 @NgModule({
   declarations: [
     AppComponent,
-    NavbarComponent,
     FooterComponent,
     LoaderComponent,
     HeaderComponent,
